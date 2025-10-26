@@ -1,73 +1,80 @@
-
-// Configuration
+// Ganti URL ini dengan Web App URL kamu
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtsKv8Y7-qMTaiUYh5CnqHginxs8tgvfI5o0dy4ZGFVwlKlrekD-4Akx6B5Grrjpfc/exec";
-const MAX_PER_DIV = 10;
 
-// DOM refs
-const startBtn = document.getElementById('startBtn');
-const regForm = document.getElementById('regForm');
-const openStatus = document.getElementById('openStatus');
-const quotaGrid = document.getElementById('quotaGrid');
-const closedMsg = document.getElementById('closedMsg');
-
-startBtn.addEventListener('click', ()=>{ regForm.classList.remove('hidden'); window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'}); });
-
-// Fetch status (GET ?action=status)
-async function fetchStatus(){ 
-  try{ 
-    const res = await fetch(API_URL + '?action=status');
+// === CEK STATUS PENDAFTARAN ===
+async function fetchStatus() {
+  const statusEl = document.getElementById("status");
+  try {
+    const res = await fetch(SCRIPT_URL);
     const data = await res.json();
-    updateStatusUI(data);
-  }catch(err){ console.error(err); openStatus.innerText='Error memuat status'; }
+    if (data.status === "closed") {
+      statusEl.textContent = "Pendaftaran Panitia Natal KMK 2025 sudah ditutup. 💖✨";
+      statusEl.classList.add("closed");
+      document.querySelector("form").style.display = "none";
+    } else {
+      statusEl.textContent = `Pendaftaran masih dibuka! Total pendaftar: ${data.total}`;
+      statusEl.classList.remove("closed");
+    }
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = "Error memuat status. Silakan refresh halaman.";
+  }
 }
 
-function updateStatusUI(data){
-  const counts = data.counts || {ACARA:0,HPDD:0,MDK:0,TKP:0};
-  const isOpen = data.isOpen;
-  openStatus.innerText = isOpen ? 'Terbuka' : 'Tutup (kuota penuh)';
-  quotaGrid.innerHTML = '';
-  ['ACARA','HPDD','MDK','TKP'].forEach(k=>{ const used = counts[k] || 0; const card = document.createElement('div'); card.className='quota-card'; card.innerHTML = `<div style="font-weight:700">${k}</div><div class="small">${used} / ${MAX_PER_DIV}</div>`; quotaGrid.appendChild(card); });
-  if(!isOpen){ regForm.classList.add('hidden'); closedMsg.classList.remove('hidden'); } else { closedMsg.classList.add('hidden'); }
+// === BUAT ELEMEN LOADER & NOTIF ===
+const loader = document.createElement("div");
+loader.id = "loader";
+loader.innerHTML = `<div class="spinner"></div><p>Mengirim data...</p>`;
+loader.style.display = "none";
+document.body.appendChild(loader);
+
+const notif = document.createElement("div");
+notif.id = "notif";
+document.body.appendChild(notif);
+
+function showNotif(message, type = "success") {
+  notif.textContent = message;
+  notif.className = type;
+  notif.style.opacity = "1";
+  setTimeout(() => (notif.style.opacity = "0"), 3000);
 }
 
-// Form submit
-document.getElementById('regForm').addEventListener('submit', async (e)=>{
+// === SUBMIT FORM ===
+document.querySelector("form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const fileInput = document.getElementById('krs');
-  const file = fileInput.files[0];
-  if(!file){ alert('Silakan unggah KRS.'); return; }
-  if(file.size > 5*1024*1024){ alert('Ukuran file maksimal 5 MB.'); return; }
+  loader.style.display = "flex";
 
-  const payload = new FormData();
-  payload.append('action','submit');
-  payload.append('name', document.getElementById('name').value.trim());
-  payload.append('npm', document.getElementById('npm').value.trim());
-  payload.append('jurusan', document.getElementById('jurusan').value.trim());
-  payload.append('angkatan', document.getElementById('angkatan').value.trim());
-  payload.append('whatsapp', document.getElementById('whatsapp').value.trim());
-  payload.append('div1', document.getElementById('div1').value);
-  payload.append('alasan1', document.getElementById('alasan1').value.trim());
-  payload.append('div2', document.getElementById('div2').value);
-  payload.append('alasan2', document.getElementById('alasan2').value.trim());
-  payload.append('bersedia', document.getElementById('bersedia').value);
-  payload.append('tema', document.getElementById('tema').value.trim());
-  payload.append('krs', file, file.name);
+  const data = {
+    nama: document.getElementById("nama").value,
+    npm: document.getElementById("npm").value,
+    jurusan: document.getElementById("jurusan").value,
+    angkatan: document.getElementById("angkatan").value,
+    whatsapp: document.getElementById("whatsapp").value,
+    divisi1: document.getElementById("divisi1").value,
+    alasan1: document.getElementById("alasan1").value,
+    divisi2: document.getElementById("divisi2").value,
+    alasan2: document.getElementById("alasan2").value,
+    bersedia: document.querySelector('input[name="bersedia"]:checked')?.value || "Tidak",
+    linkKRS: document.getElementById("linkKRS").value,
+  };
 
-  const submitBtn = document.getElementById('submitBtn');
-  submitBtn.disabled = true; submitBtn.innerText = 'Mengirim...';
+  try {
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
 
-  try{
-    const res = await fetch(API_URL, { method: 'POST', body: payload });
-    const result = await res.json();
-    if(result.success || result.result==='success'){ alert('Pendaftaran berhasil! Terima kasih.'); fetchStatus(); regForm.reset(); }
-    else { alert('Gagal: ' + (result.message || JSON.stringify(result))); }
-  }catch(err){ console.error(err); alert('Terjadi error saat mengirim. Coba lagi.'); }
-  finally{ submitBtn.disabled = false; submitBtn.innerText = 'Kirim Pendaftaran'; }
+    showNotif("Terima kasih! Data kamu sudah terkirim 🎄✨", "success");
+    e.target.reset();
+  } catch (err) {
+    console.error(err);
+    showNotif("Gagal mengirim data, coba lagi ya 😔", "error");
+  } finally {
+    loader.style.display = "none";
+  }
 });
 
-// Cancel
-document.getElementById('cancelBtn').addEventListener('click', ()=>{ regForm.classList.add('hidden'); window.scrollTo({top:0,behavior:'smooth'}); });
-
-// initial status + polling
+// Jalankan status saat halaman dibuka
 fetchStatus();
-setInterval(fetchStatus, 20000);
