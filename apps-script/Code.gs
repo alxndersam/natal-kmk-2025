@@ -9,7 +9,7 @@
  *   (atau sesuai kebutuhan keamanan).
  */
 
-const SPREADSHEET_ID = 'GANTI_DENGAN_SPREADSHEET_ID';
+const SPREADSHEET_ID = '1lrK9P74dGg0daZ-Ym5gZIP_BC1Nu53bLanKPE4lPmf0';
 const SHEET_NAME = 'Responses'; // atau nama sheet tujuan
 
 function doGet(e) {
