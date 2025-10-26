@@ -1,6 +1,6 @@
 
 // Configuration
-const API_URL = https://script.google.com/macros/s/AKfycbwtsKv8Y7-qMTaiUYh5CnqHginxs8tgvfI5o0dy4ZGFVwlKlrekD-4Akx6B5Grrjpfc/exec
+const API_URL = "https://script.google.com/macros/s/AKfycbwtsKv8Y7-qMTaiUYh5CnqHginxs8tgvfI5o0dy4ZGFVwlKlrekD-4Akx6B5Grrjpfc/exec";
 const MAX_PER_DIV = 10;
 
 // DOM refs
