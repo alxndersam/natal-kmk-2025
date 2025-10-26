@@ -1,89 +1,92 @@
-
-:root{
-  --red:#b91c1c; --green:#047857; --gold:#b45309; --purple:#6d28d9;
-  --bg:#fff8f6; --card:#ffffff;
-}
-*{box-sizing:border-box}
-body{font-family:Inter, system-ui, Arial, sans-serif;margin:0;background:linear-gradient(180deg,#fff 0%,var(--bg) 100%);color:#111}
-.hero{background:linear-gradient(135deg,var(--red),var(--green));color:#fff;padding:44px 16px;text-align:center}
-.hero h1{margin:0;font-size:28px}
-.hero span{font-weight:800}
-.subtitle{margin-top:8px;opacity:0.95}
-
-.container{max-width:900px;margin:-28px auto 60px;padding:22px;background:var(--card);border-radius:14px;box-shadow:0 10px 30px rgba(15,23,42,0.08)}
-.lead{font-size:15px;color:#374151}
-.muted{color:#6b7280;font-size:13px}
-.btn{background:var(--purple);color:#fff;padding:10px 16px;border-radius:10px;border:none;cursor:pointer}
-.btn-secondary{background:transparent;border:2px solid #e5e7eb;color:#111;padding:8px 14px;border-radius:8px}
-.actions{margin-top:12px}
-.status{padding:12px;border-radius:10px;background:#f8fafc;color:#0f172a;margin-bottom:12px}
-.quota-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
-.quota-card{padding:10px;border-radius:8px;background:#fff;border:1px solid #eef2ff;text-align:center}
-.hidden{display:none}
-
-.form{margin-top:12px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px}
-label{display:block;font-weight:600;margin-bottom:6px;font-size:13px}
-input[type=text],input[type=number],select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6}
-textarea{min-height:96px}
-
-.row{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
-.upload-note{font-size:13px;color:#374151}
-.form-actions{display:flex;gap:12px;margin-top:12px}
-
-.closed{padding:14px;border-radius:10px;background:#fff6f6;border:1px solid #fecaca;margin-top:12px}
-
-.foot{text-align:center;margin-top:18px;color:#6b7280;font-size:13px}
-
-@media(max-width:760px){.grid{grid-template-columns:1fr}.quota-grid{grid-template-columns:repeat(2,1fr)}}
-
-/* Loader */
-#loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.8);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-.spinner {
-  border: 5px solid #ddd;
-  border-top: 5px solid #e63946;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-#loader p {
-  margin-top: 10px;
-  font-weight: 600;
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  background: #fff5f5;
   color: #333;
 }
 
-/* Notifikasi */
-#notif {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #4caf50;
+.hero {
+  background: linear-gradient(135deg, #8b0000, #b22222);
   color: white;
-  padding: 12px 20px;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.hero span {
+  color: #ffd700;
+}
+
+.container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.hidden { display: none; }
+
+.btn, .btn-secondary {
+  padding: 0.6rem 1.2rem;
   border-radius: 8px;
   font-weight: 600;
-  transition: opacity 0.5s;
-  opacity: 0;
-  z-index: 1001;
+  cursor: pointer;
 }
-#notif.error {
-  background: #e63946;
+
+.btn {
+  background: #b22222;
+  color: white;
+  border: none;
 }
+
+.btn-secondary {
+  background: #ddd;
+  border: none;
+}
+
+.form label {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.form input, .form textarea, .form select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.upload-note {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #b22222;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 1rem auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.notif {
+  text-align: center;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+}
+
+.notif.success { background: #d4edda; color: #155724; }
+.notif.error { background: #f8d7da; color: #721c24; }
