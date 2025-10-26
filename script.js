@@ -1,5 +1,5 @@
 // Ganti URL ini dengan Web App URL kamu
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtsKv8Y7-qMTaiUYh5CnqHginxs8tgvfI5o0dy4ZGFVwlKlrekD-4Akx6B5Grrjpfc/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxWNEHmZ1SoRWuVkbgW0D3t4chjRKWTU5i4aA8ZkiyW1VEjFbQvkrnLJFJDXMFLGuH/exec";
 
 // === CEK STATUS PENDAFTARAN ===
 async function fetchStatus() {
