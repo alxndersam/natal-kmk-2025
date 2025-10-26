@@ -1,80 +1,80 @@
-// Ganti URL ini dengan Web App URL kamu
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxWNEHmZ1SoRWuVkbgW0D3t4chjRKWTU5i4aA8ZkiyW1VEjFbQvkrnLJFJDXMFLGuH/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwxWNEHmZ1SoRWuVkbgW0D3t4chjRKWTU5i4aA8ZkiyW1VEjFbQvkrnLJFJDXMFLGuH/exec";
 
-// === CEK STATUS PENDAFTARAN ===
-async function fetchStatus() {
-  const statusEl = document.getElementById("status");
-  try {
-    const res = await fetch(SCRIPT_URL);
-    const data = await res.json();
-    if (data.status === "closed") {
-      statusEl.textContent = "Pendaftaran Panitia Natal KMK 2025 sudah ditutup. 💖✨";
-      statusEl.classList.add("closed");
-      document.querySelector("form").style.display = "none";
-    } else {
-      statusEl.textContent = `Pendaftaran masih dibuka! Total pendaftar: ${data.total}`;
-      statusEl.classList.remove("closed");
-    }
-  } catch (err) {
-    console.error(err);
-    statusEl.textContent = "Error memuat status. Silakan refresh halaman.";
-  }
-}
+const startBtn = document.getElementById('startBtn');
+const regForm = document.getElementById('regForm');
+const cancelBtn = document.getElementById('cancelBtn');
+const loader = document.getElementById('loader');
+const notif = document.getElementById('notif');
 
-// === BUAT ELEMEN LOADER & NOTIF ===
-const loader = document.createElement("div");
-loader.id = "loader";
-loader.innerHTML = `<div class="spinner"></div><p>Mengirim data...</p>`;
-loader.style.display = "none";
-document.body.appendChild(loader);
-
-const notif = document.createElement("div");
-notif.id = "notif";
-document.body.appendChild(notif);
-
-function showNotif(message, type = "success") {
-  notif.textContent = message;
-  notif.className = type;
-  notif.style.opacity = "1";
-  setTimeout(() => (notif.style.opacity = "0"), 3000);
-}
-
-// === SUBMIT FORM ===
-document.querySelector("form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  loader.style.display = "flex";
-
-  const data = {
-    nama: document.getElementById("nama").value,
-    npm: document.getElementById("npm").value,
-    jurusan: document.getElementById("jurusan").value,
-    angkatan: document.getElementById("angkatan").value,
-    whatsapp: document.getElementById("whatsapp").value,
-    divisi1: document.getElementById("divisi1").value,
-    alasan1: document.getElementById("alasan1").value,
-    divisi2: document.getElementById("divisi2").value,
-    alasan2: document.getElementById("alasan2").value,
-    bersedia: document.querySelector('input[name="bersedia"]:checked')?.value || "Tidak",
-    linkKRS: document.getElementById("linkKRS").value,
-  };
-
-  try {
-    await fetch(SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    showNotif("Terima kasih! Data kamu sudah terkirim 🎄✨", "success");
-    e.target.reset();
-  } catch (err) {
-    console.error(err);
-    showNotif("Gagal mengirim data, coba lagi ya 😔", "error");
-  } finally {
-    loader.style.display = "none";
-  }
+startBtn.addEventListener('click', () => {
+  regForm.classList.remove('hidden');
+  startBtn.parentElement.parentElement.classList.add('hidden');
 });
 
-// Jalankan status saat halaman dibuka
-fetchStatus();
+cancelBtn.addEventListener('click', () => {
+  regForm.reset();
+  regForm.classList.add('hidden');
+  document.querySelector('.intro').classList.remove('hidden');
+});
+
+function showNotif(type, message) {
+  notif.textContent = message;
+  notif.className = `notif ${type}`;
+  notif.classList.remove('hidden');
+  setTimeout(() => notif.classList.add('hidden'), 4000);
+}
+
+regForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  loader.classList.remove('hidden');
+  notif.classList.add('hidden');
+
+  const file = document.getElementById('krs').files[0];
+  if (!file) {
+    showNotif('error', 'Harap upload KRS terlebih dahulu.');
+    loader.classList.add('hidden');
+    return;
+  }
+
+  // Upload file ke Google Drive
+  const formDataFile = new FormData();
+  formDataFile.append('file', file);
+
+  try {
+    // Langsung kirim data ke API (file di-handle di Apps Script)
+    const body = {
+      nama: document.getElementById('name').value,
+      npm: document.getElementById('npm').value,
+      jurusan: document.getElementById('jurusan').value,
+      angkatan: document.getElementById('angkatan').value,
+      whatsapp: document.getElementById('whatsapp').value,
+      divisi1: document.getElementById('div1').value,
+      alasan1: document.getElementById('alasan1').value,
+      divisi2: document.getElementById('div2').value,
+      alasan2: document.getElementById('alasan2').value,
+      bersedia: document.getElementById('bersedia').value,
+      linkKRS: file.name,
+      temaNatal: "Natal KMK Gunadarma 2025"
+    };
+
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const data = await res.json();
+    loader.classList.add('hidden');
+
+    if (data.result === "success") {
+      showNotif('success', 'Pendaftaran berhasil dikirim! 🎉');
+      regForm.reset();
+    } else {
+      showNotif('error', 'Terjadi kesalahan saat mengirim data.');
+    }
+
+  } catch (err) {
+    loader.classList.add('hidden');
+    showNotif('error', 'Gagal mengirim formulir. Coba lagi.');
+  }
+});
