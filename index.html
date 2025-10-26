@@ -15,22 +15,16 @@
   </header>
 
   <main class="container">
-
-    <!-- Notifikasi -->
-    <div id="notif" class="notif hidden"></div>
-
     <section class="intro">
       <p>Selamat datang! Yuk bergabung menjadi panitia Natal KMK Gunadarma 2025. Klik tombol di bawah untuk mulai mengisi formulir pendaftaran.</p>
-      <div class="muted">Kuota: Total <strong>40</strong></div>
+      <div class="muted">Kuota: <strong>Tidak dibatasi</strong></div>
       <div class="actions"><button id="startBtn" class="btn">Mulai Isi Form</button></div>
     </section>
 
-    <section id="statusBox" class="status">
-      <div class="small">Status pendaftaran: <strong id="openStatus">Memuat...</strong></div>
-      <div class="quota-grid" id="quotaGrid"></div>
-    </section>
-
     <form id="regForm" class="form hidden" enctype="multipart/form-data">
+      <div id="notif" class="notif hidden"></div>
+      <div id="loader" class="loader hidden"></div>
+
       <div class="grid">
         <label>Nama Lengkap<input type="text" id="name" required></label>
         <label>NPM<input type="text" id="npm" required></label>
@@ -89,8 +83,6 @@
 
     <footer class="foot">Butuh bantuan? Hubungi panitia inti KMK.</footer>
   </main>
-
-  <div id="loader" class="loader hidden">⏳ Mengirim data...</div>
 
   <script src="script.js"></script>
 </body>
