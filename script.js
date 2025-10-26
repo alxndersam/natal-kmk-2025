@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwV2EYxj0-pl6IE4LzhQYFuFLq8NOQqASgB1WLX1TQbhCZrkdGzjcL5daGydCsy6u--/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycby0iVEwh7EeZswtT46l9qbBZgtyem-Nj4d_r73eJjDqMitx-ex1FfX8PFphfPP9fXVA/exec";
 
 const startBtn = document.getElementById('startBtn');
 const regForm = document.getElementById('regForm');
